@@ -10,7 +10,7 @@ d_lr = 0.001
 # learning rate for R, the lr in Apple blog is 0.0001
 t_lr = 0.001
 # lambda in paper, the author of the paper said it's 0.01
-delta = 10.0
+delta = 1.0
 img_width = 256
 img_height = 256
 img_channels = 3

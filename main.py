@@ -113,6 +113,8 @@ class Main(object):
         mse_loss = torch.nn.MSELoss()
 
         for index in range(cfg.t_pretrain):
+
+            #print("aaaaaaaa")
             anime_image_batch, _ = iter(self.anime_train_loader).next()
             anime_image_batch = Variable(anime_image_batch).cuda()
 
@@ -125,7 +127,7 @@ class Main(object):
             real_image_batch, _ = iter(self.real_train_loader).next()
             real_image_batch = Variable(real_image_batch).cuda()
 
-            print(real_image_batch.type())
+            #print(real_image_batch.size())
 
             self.T.train()
             transreal_image_batch = self.T(real_image_batch)
@@ -138,8 +140,10 @@ class Main(object):
             #t_loss = mse_loss(real_features, transreal_features)
             loss = torch.abs(transreal_features - real_features)
 
-            t_loss = loss.sum() / cfg.batch_size
-
+            #t_loss = loss.sum() / (cfg.batch_size * loss.mean())
+            t_loss = loss.mean()
+            print(t_loss.size())
+            print(t_loss)
             #################################
             # t_loss = torch.div(t_loss, cfg.batch_size)
             t_loss = torch.mul(t_loss, self.delta)
@@ -257,6 +261,9 @@ class Main(object):
         print('Training...')
 
 
+        #self.D.load_state_dict(torch.load("models/D_620.pkl"))
+        #self.T.load_state_dict(torch.load("models/T_620.pkl"))
+
 
         '''
         image_history_buffer = ImageHistoryBuffer((0, cfg.img_channels, cfg.img_height, cfg.img_width),
@@ -305,15 +312,17 @@ class Main(object):
                 #t_loss = mse_loss(real_features, transreal_features)
                 loss = torch.abs(transreal_features - real_features)
 
-                t_loss_reg = loss.sum() / cfg.batch_size
+                #t_loss_reg = loss.sum() / cfg.batch_size
+
+                t_loss_reg = loss.mean()
 
                 #--------================================================================
 
                 #t_loss_reg = self.self_regularization_loss(   self.vgg(real_image_batch).relu4_3 ,  self.vgg(transreal_image_batch).relu4_3  )
-                t_loss_reg_scale = torch.mul(t_loss_reg, self.delta)
+                t_loss_reg_scale = torch.mul(t_loss_reg, 0.1)
 
 
-                t_loss = t_loss_reg_scale + t_loss_adv
+                t_loss = t_loss_adv + t_loss_reg_scale
 
                 self.opt_T.zero_grad()
                 self.opt_D.zero_grad()
@@ -400,8 +409,8 @@ class Main(object):
 
 
                 self.T.eval()
-                real_image_batch = self.T(real_image_batch)
-                self.generate_batch_train_image(anime_image_batch, real_image_batch, animeblur_image_batch, step_index=step)
+                realtrans_image_batch = self.T(real_image_batch)
+                self.generate_batch_train_image(real_image_batch, realtrans_image_batch, animeblur_image_batch, step_index=step)
 
     def generate_batch_train_image(self, anime_image_batch, ref_image_batch, real_image_batch, step_index=-1):
         print('=' * 50)
@@ -436,8 +445,8 @@ if __name__ == '__main__':
 
     obj.load_data()
 
-    obj.pre_train_t()
-    obj.pre_train_d()
+#    obj.pre_train_t()
+#    obj.pre_train_d()
     obj.train()
 
     obj.generate_all_train_image()
