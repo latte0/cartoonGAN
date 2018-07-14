@@ -10,7 +10,7 @@ d_lr = 0.001
 # learning rate for R, the lr in Apple blog is 0.0001
 t_lr = 0.001
 # lambda in paper, the author of the paper said it's 0.01
-delta = 1.0
+delta = 10.0
 img_width = 256
 img_height = 256
 img_channels = 3
@@ -40,7 +40,7 @@ batch_size = 4
 # the history buffer size
 buffer_size = 12800
 k_d = 1  # number of discriminator updates per step
-k_t = 50  # number of generative network updates per step, the author of the paper said it's 50
+k_t = 4  # number of generative network updates per step, the author of the paper said it's 50
 
 # output R pre-training result per times
 t_pre_per = 50

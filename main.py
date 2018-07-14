@@ -6,7 +6,7 @@ from torch.autograd import Variable
 from torchvision import transforms
 
 from network.Transformer import Transformer
-from network.Discriminator import Discriminator
+from network.Discriminator2 import Discriminator
 from network.vgg import Vgg16
 from network.image_utils import generate_img_batch, calc_acc
 
@@ -445,7 +445,7 @@ if __name__ == '__main__':
 
     obj.load_data()
 
-#    obj.pre_train_t()
+    obj.pre_train_t()
 #    obj.pre_train_d()
     obj.train()
 
