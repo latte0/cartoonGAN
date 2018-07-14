@@ -319,7 +319,7 @@ class Main(object):
                 #--------================================================================
 
                 #t_loss_reg = self.self_regularization_loss(   self.vgg(real_image_batch).relu4_3 ,  self.vgg(transreal_image_batch).relu4_3  )
-                t_loss_reg_scale = torch.mul(t_loss_reg, 0.1)
+                t_loss_reg_scale = torch.mul(t_loss_reg, self.delta)
 
 
                 t_loss = t_loss_adv + t_loss_reg_scale
